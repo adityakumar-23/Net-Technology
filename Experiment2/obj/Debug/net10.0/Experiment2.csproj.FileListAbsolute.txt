@@ -1,0 +1,15 @@
+D:\Net-Technology\Experiment2\bin\Debug\net10.0\Experiment2.exe
+D:\Net-Technology\Experiment2\bin\Debug\net10.0\Experiment2.deps.json
+D:\Net-Technology\Experiment2\bin\Debug\net10.0\Experiment2.runtimeconfig.json
+D:\Net-Technology\Experiment2\bin\Debug\net10.0\Experiment2.dll
+D:\Net-Technology\Experiment2\bin\Debug\net10.0\Experiment2.pdb
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.GeneratedMSBuildEditorConfig.editorconfig
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.AssemblyInfoInputs.cache
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.AssemblyInfo.cs
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.csproj.CoreCompileInputs.cache
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.sourcelink.json
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.dll
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\refint\Experiment2.dll
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.pdb
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\Experiment2.genruntimeconfig.cache
+D:\Net-Technology\Experiment2\obj\Debug\net10.0\ref\Experiment2.dll
