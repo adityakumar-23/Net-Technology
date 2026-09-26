@@ -1,0 +1,24 @@
+﻿@model List<WebApplication1.Models.Product>
+
+@{
+    ViewData["Title"] = "Product Catalog";
+}
+
+<h1>Product Catalog</h1>
+
+@foreach (var product in Model)
+{
+    <div style="border:1px solid #ccc; padding:15px; margin:10px; width:350px;">
+        <h2>@product.Name</h2>
+
+        <p><b>Category:</b> @product.Category</p>
+
+        <p><b>Price:</b> ₹@product.Price</p>
+
+        <p>@product.Description</p>
+
+        <a href="/Product/Details/@product.Id">
+            View Details
+        </a>
+    </div>
+}

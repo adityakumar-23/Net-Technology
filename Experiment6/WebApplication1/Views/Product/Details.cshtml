@@ -1,0 +1,23 @@
+﻿@model WebApplication1.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1>Product Details</h1>
+
+<div style="border:1px solid #333; padding:20px; width:400px;">
+
+    <h2>@Model.Name</h2>
+
+    <p><b>Product ID:</b> @Model.Id</p>
+
+    <p><b>Category:</b> @Model.Category</p>
+
+    <p><b>Price:</b> ₹@Model.Price</p>
+
+    <p><b>Description:</b> @Model.Description</p>
+
+    <a href="/Product/Index">Back to Products</a>
+
+</div>
