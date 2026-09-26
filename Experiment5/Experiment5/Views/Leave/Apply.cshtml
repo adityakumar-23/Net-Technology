@@ -1,0 +1,86 @@
+﻿@model Experiment5.Models.LeaveRequest
+
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center">Leave Application</h2>
+
+    <hr />
+
+    <form asp-controller="Leave"
+          asp-action="Apply"
+          method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Student Name</label>
+
+            <input asp-for="StudentName"
+                   class="form-control"
+                   placeholder="Enter your name"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Leave Type</label>
+
+            <select asp-for="LeaveType"
+                    class="form-select"
+                    required>
+
+                <option value="">-- Select Leave Type --</option>
+
+                <option value="Medical">Medical Leave</option>
+
+                <option value="Personal">Personal Leave</option>
+
+                <option value="Emergency">Emergency Leave</option>
+
+                <option value="Other">Other</option>
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">From Date</label>
+
+            <input asp-for="FromDate"
+                   type="date"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">To Date</label>
+
+            <input asp-for="ToDate"
+                   type="date"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reason</label>
+
+            <textarea asp-for="Reason"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Enter reason for leave"
+                      required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Apply Leave
+        </button>
+
+        <a asp-controller="Leave"
+           asp-action="Index"
+           class="btn btn-secondary">
+            View Leave
+        </a>
+
+    </form>
+
+</div>

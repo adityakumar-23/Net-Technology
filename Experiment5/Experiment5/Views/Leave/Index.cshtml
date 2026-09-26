@@ -1,0 +1,54 @@
+﻿@model List<Experiment5.Models.LeaveRequest>
+
+@{
+    ViewData["Title"] = "Leave Management";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center">Leave Management System</h2>
+
+    <hr />
+
+    <a asp-controller="Leave"
+       asp-action="Apply"
+       class="btn btn-success mb-3">
+        + Apply for Leave
+    </a>
+
+    <table class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Student Name</th>
+                <th>Leave Type</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var leave in Model)
+            {
+                <tr>
+                    <td>@leave.Id</td>
+                    <td>@leave.StudentName</td>
+                    <td>@leave.LeaveType</td>
+                    <td>@leave.FromDate.ToString("dd-MM-yyyy")</td>
+                    <td>@leave.ToDate.ToString("dd-MM-yyyy")</td>
+                    <td>@leave.Reason</td>
+                    <td>
+                        <span class="badge bg-warning">
+                            @leave.Status
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
