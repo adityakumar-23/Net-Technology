@@ -1,0 +1,199 @@
+@model Experiment7.Models.FeedbackModel
+
+<div class="app-card">
+    <div class="app-card-header bg-light-subtle d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle p-2 rounded-circle">
+                <i class="bi bi-ui-checks fs-5"></i>
+            </span>
+            <div>
+                <h5 class="mb-0 fw-bold">Feedback Submission Form</h5>
+                <small class="text-muted">Fields marked with an asterisk (<span class="text-danger">*</span>) are mandatory.</small>
+            </div>
+        </div>
+        <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill font-monospace">
+            HTML Helper Partial View
+        </span>
+    </div>
+
+    <div class="app-card-body p-4">
+        @* HTML Helper: Html.BeginForm with anti-forgery token and validation summary *@
+        @using (Html.BeginForm("Create", "Feedback", FormMethod.Post, new { id = "feedbackForm", @class = "needs-validation", novalidate = "novalidate" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @* HTML Helper: ValidationSummary displaying server-side and model level issues *@
+            @Html.ValidationSummary(true, "Please review the highlighted errors before submitting:", new { @class = "validation-summary-errors shadow-sm" })
+
+            <div class="row g-4">
+                <!-- Full Name Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
+                        <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-person-fill"></i>
+                            </span>
+                            @Html.TextBoxFor(m => m.FullName, new { 
+                                @class = "form-control border-start-0", 
+                                placeholder = "e.g. Aditi Sharma",
+                                autocomplete = "name",
+                                aria_describedby = "name-hint"
+                            })
+                        </div>
+                        <span id="name-hint" class="form-hint">Enter 3 to 60 alphabetic characters.</span>
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Email Address Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-envelope-at-fill"></i>
+                            </span>
+                            @Html.TextBoxFor(m => m.Email, new { 
+                                @class = "form-control border-start-0", 
+                                type = "email",
+                                placeholder = "e.g. aditi@example.com",
+                                autocomplete = "email",
+                                aria_describedby = "email-hint"
+                            })
+                        </div>
+                        <span id="email-hint" class="form-hint">We'll send confirmation & updates to this email.</span>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Contact Number Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ContactNumber, new { @class = "form-label" })
+                        <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-telephone-fill"></i>
+                            </span>
+                            @Html.TextBoxFor(m => m.ContactNumber, new { 
+                                @class = "form-control border-start-0", 
+                                type = "tel",
+                                placeholder = "10-digit number (e.g. 9876543210)",
+                                autocomplete = "tel",
+                                maxlength = "10",
+                                aria_describedby = "phone-hint"
+                            })
+                        </div>
+                        <span id="phone-hint" class="form-hint">Valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.</span>
+                        @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Category DropDown Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Category, new { @class = "form-label" })
+                        <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-tag-fill"></i>
+                            </span>
+                            @* HTML Helper: DropDownListFor *@
+                            @Html.DropDownListFor(m => m.Category, Model.CategoryOptions, "-- Select Feedback Category --", new { 
+                                @class = "form-select border-start-0",
+                                aria_describedby = "cat-hint"
+                            })
+                        </div>
+                        <span id="cat-hint" class="form-hint">Select the department or aspect of your feedback.</span>
+                        @Html.ValidationMessageFor(m => m.Category, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Star Rating Field (Radio Button Group via HTML Helpers) -->
+                <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light border">
+                        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-2">
+                            <div>
+                                @Html.LabelFor(m => m.Rating, new { @class = "form-label mb-0" })
+                                <span class="text-danger">*</span>
+                                <span class="d-block form-hint">Click on stars to rate your satisfaction level.</span>
+                            </div>
+                            <span id="selectedRatingText" class="badge bg-warning-subtle text-dark border border-warning px-3 py-2 fw-bold">
+                                5 Stars - Excellent / Outstanding
+                            </span>
+                        </div>
+
+                        <div class="star-rating-group">
+                            @Html.RadioButtonFor(m => m.Rating, 5, new { id = "star5", @class = "rating-radio" })
+                            <label for="star5" title="5 Stars - Outstanding">&#9733;</label>
+
+                            @Html.RadioButtonFor(m => m.Rating, 4, new { id = "star4", @class = "rating-radio" })
+                            <label for="star4" title="4 Stars - Good">&#9733;</label>
+
+                            @Html.RadioButtonFor(m => m.Rating, 3, new { id = "star3", @class = "rating-radio" })
+                            <label for="star3" title="3 Stars - Average">&#9733;</label>
+
+                            @Html.RadioButtonFor(m => m.Rating, 2, new { id = "star2", @class = "rating-radio" })
+                            <label for="star2" title="2 Stars - Needs Improvement">&#9733;</label>
+
+                            @Html.RadioButtonFor(m => m.Rating, 1, new { id = "star1", @class = "rating-radio" })
+                            <label for="star1" title="1 Star - Poor">&#9733;</label>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Rating, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Comments TextArea Field -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                @Html.LabelFor(m => m.Comments, new { @class = "form-label mb-0" })
+                                <span class="text-danger">*</span>
+                            </div>
+                            <span id="charCountDisplay" class="small text-muted font-monospace">0 / 1000 characters</span>
+                        </div>
+                        @* HTML Helper: TextAreaFor *@
+                        @Html.TextAreaFor(m => m.Comments, 5, 50, new { 
+                            @class = "form-control", 
+                            placeholder = "Describe your experience in detail. Mention what went well, what could be improved, or any specific concerns (minimum 15 characters)...",
+                            aria_describedby = "comments-hint"
+                        })
+                        <span id="comments-hint" class="form-hint">Minimum 15 characters required for constructive analysis.</span>
+                        @Html.ValidationMessageFor(m => m.Comments, "", new { @class = "validation-msg" })
+                    </div>
+                </div>
+
+                <!-- Would Recommend CheckBox Field -->
+                <div class="col-12">
+                    <div class="form-check p-3 rounded-3 border bg-light-subtle d-flex align-items-center gap-3">
+                        @Html.CheckBoxFor(m => m.WouldRecommend, new { @class = "form-check-input fs-5 m-0", id = "wouldRecommendCheck" })
+                        <div class="d-flex flex-column">
+                            @Html.LabelFor(m => m.WouldRecommend, new { @class = "form-check-label fw-bold text-dark cursor-pointer", @for = "wouldRecommendCheck" })
+                            <small class="text-muted">Recommending helps benchmark departmental quality and performance.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4 pt-3 border-top">
+                <div class="d-flex align-items-center text-muted small">
+                    <i class="bi bi-shield-lock-fill me-1 text-success"></i>
+                    <span>Protected by Anti-Forgery Token &amp; MVC Model Validation</span>
+                </div>
+                <div class="d-flex gap-2">
+                    @* HTML Helper: ActionLink for navigation *@
+                    @Html.ActionLink("Cancel & Return", "Index", "Feedback", null, new { @class = "btn btn-secondary-custom" })
+                    <button type="submit" class="btn btn-primary-custom d-flex align-items-center gap-2">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Submit Feedback</span>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

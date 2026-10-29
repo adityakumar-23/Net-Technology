@@ -1,0 +1,181 @@
+@model Experiment7.Models.FeedbackIndexViewModel
+
+@{
+    ViewData["Title"] = "Feedback Dashboard";
+}
+
+<!-- Hero Welcome Banner -->
+<div class="dashboard-hero">
+    <div class="hero-glow"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <span class="badge bg-white text-primary fw-bold text-uppercase px-3 py-1 mb-2 rounded-pill shadow-sm">
+                Experiment 7 &bull; MVC Layout, Partial View &amp; Validation
+            </span>
+            <h1 class="display-6 fw-extrabold mb-2 text-white">
+                Feedback Management Module
+            </h1>
+            <p class="lead text-white-50 mb-0">
+                Centralized dashboard providing real-time satisfaction metrics, rating distributions, and feedback tracking powered by ASP.NET Core MVC Layouts, Partial Views, and Strongly-Typed HTML Helpers.
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+            <a asp-action="Create" class="btn btn-light text-primary btn-lg fw-bold shadow-lg d-inline-flex align-items-center gap-2">
+                <i class="bi bi-pencil-fill"></i>
+                <span>Give New Feedback</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1: Metrics Partial View Showcase -->
+<div class="mb-2 d-flex align-items-center justify-content-between">
+    <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-speedometer2 text-primary"></i>
+        System Metrics &amp; Executive Summary
+    </h5>
+    <span class="badge bg-secondary-subtle text-secondary font-monospace px-2 py-1">
+        @@await Html.PartialAsync("_FeedbackSummary")
+    </span>
+</div>
+
+<!-- Render Summary Partial View -->
+@await Html.PartialAsync("_FeedbackSummary", Model.Summary)
+
+<!-- SECTION 2: Search, Filter & View Controls -->
+<div class="filter-bar mb-4">
+    @using (Html.BeginForm("Index", "Feedback", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+    {
+        <!-- Search Query Box -->
+        <div class="col-md-4">
+            <label class="form-label" for="searchTerm">
+                <i class="bi bi-search text-muted me-1"></i> Search Feedbacks
+            </label>
+            <input type="text" id="searchTerm" name="searchTerm" value="@Model.SearchTerm" 
+                   class="form-control" placeholder="Search by name, email, keyword..." />
+        </div>
+
+        <!-- Category Dropdown Filter -->
+        <div class="col-md-3">
+            <label class="form-label" for="category">
+                <i class="bi bi-filter text-muted me-1"></i> Department / Category
+            </label>
+            @Html.DropDownList("category", Model.CategoryFilterOptions, new { @class = "form-select", id = "category" })
+        </div>
+
+        <!-- Rating Filter -->
+        <div class="col-sm-6 col-md-2">
+            <label class="form-label" for="rating">
+                <i class="bi bi-star text-muted me-1"></i> Rating
+            </label>
+            <select name="rating" id="rating" class="form-select">
+                <option value="">All Ratings</option>
+                <option value="5" selected="@(Model.SelectedRating == 5 ? "selected" : null)">5 Stars (&#9733;&#9733;&#9733;&#9733;&#9733;)</option>
+                <option value="4" selected="@(Model.SelectedRating == 4 ? "selected" : null)">4 Stars (&#9733;&#9733;&#9733;&#9733;)</option>
+                <option value="3" selected="@(Model.SelectedRating == 3 ? "selected" : null)">3 Stars (&#9733;&#9733;&#9733;)</option>
+                <option value="2" selected="@(Model.SelectedRating == 2 ? "selected" : null)">2 Stars (&#9733;&#9733;)</option>
+                <option value="1" selected="@(Model.SelectedRating == 1 ? "selected" : null)">1 Star (&#9733;)</option>
+            </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="col-sm-6 col-md-2">
+            <label class="form-label" for="status">
+                <i class="bi bi-flag text-muted me-1"></i> Status
+            </label>
+            <select name="status" id="status" class="form-select">
+                <option value="">All Statuses</option>
+                <option value="@Experiment7.Models.FeedbackStatus.New" selected="@(Model.SelectedStatus == Experiment7.Models.FeedbackStatus.New ? "selected" : null)">New</option>
+                <option value="@Experiment7.Models.FeedbackStatus.UnderReview" selected="@(Model.SelectedStatus == Experiment7.Models.FeedbackStatus.UnderReview ? "selected" : null)">Under Review</option>
+                <option value="@Experiment7.Models.FeedbackStatus.Resolved" selected="@(Model.SelectedStatus == Experiment7.Models.FeedbackStatus.Resolved ? "selected" : null)">Resolved</option>
+            </select>
+        </div>
+
+        <!-- Preserve View Mode in hidden field -->
+        <input type="hidden" name="viewMode" value="@Model.ViewMode" />
+
+        <!-- Filter Submit & Reset Buttons -->
+        <div class="col-md-1 d-flex gap-2">
+            <button type="submit" class="btn btn-primary-custom w-100 p-2" title="Apply Filter">
+                <i class="bi bi-funnel-fill"></i>
+            </button>
+            <a asp-action="Index" class="btn btn-secondary-custom p-2" title="Reset Filters">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+        </div>
+    }
+</div>
+
+<!-- SECTION 3: Feedbacks Listing Section -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="d-flex align-items-center gap-2">
+        <h5 class="fw-bold mb-0 text-dark">
+            Submitted Feedbacks
+        </h5>
+        <span class="badge bg-primary rounded-pill">@Model.Feedbacks.Count() items</span>
+        @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.SelectedCategory) || Model.SelectedRating.HasValue || Model.SelectedStatus.HasValue)
+        {
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                <i class="bi bi-funnel"></i> Filters Active
+            </span>
+        }
+    </div>
+
+    <!-- View Mode Switcher (Grid Cards vs Table) -->
+    <div class="d-flex align-items-center gap-2">
+        <span class="small text-muted fw-semibold">View Mode:</span>
+        <div class="btn-group btn-group-sm" role="group">
+            <a asp-action="Index" 
+               asp-route-searchTerm="@Model.SearchTerm" 
+               asp-route-category="@Model.SelectedCategory" 
+               asp-route-rating="@Model.SelectedRating" 
+               asp-route-status="@Model.SelectedStatus" 
+               asp-route-viewMode="grid" 
+               class="btn @(Model.ViewMode == "grid" ? "btn-primary" : "btn-outline-secondary")"
+               title="Card Grid Partial View">
+                <i class="bi bi-grid-3x3-gap-fill me-1"></i> Cards
+            </a>
+            <a asp-action="Index" 
+               asp-route-searchTerm="@Model.SearchTerm" 
+               asp-route-category="@Model.SelectedCategory" 
+               asp-route-rating="@Model.SelectedRating" 
+               asp-route-status="@Model.SelectedStatus" 
+               asp-route-viewMode="table" 
+               class="btn @(Model.ViewMode == "table" ? "btn-primary" : "btn-outline-secondary")"
+               title="Table Partial View">
+                <i class="bi bi-table me-1"></i> Table
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 4: Conditional Rendering of Partial Views -->
+@if (Model.ViewMode == "table")
+{
+    <div class="mb-4">
+        <!-- Render Table Partial View -->
+        @await Html.PartialAsync("_FeedbackTable", Model.Feedbacks)
+    </div>
+}
+else
+{
+    @if (!Model.Feedbacks.Any())
+    {
+        <div class="app-card text-center py-5 my-3">
+            <i class="bi bi-chat-square-dots fs-1 text-muted mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">No feedback matches your query</h5>
+            <p class="text-muted mb-3">Try adjusting your search criteria or resetting filters.</p>
+            <a asp-action="Index" class="btn btn-outline-primary btn-sm">Reset All Filters</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 mb-4">
+            @* Render each Feedback using Partial View _FeedbackCard *@
+            @foreach (var item in Model.Feedbacks)
+            {
+                @await Html.PartialAsync("_FeedbackCard", item)
+            }
+        </div>
+    }
+}

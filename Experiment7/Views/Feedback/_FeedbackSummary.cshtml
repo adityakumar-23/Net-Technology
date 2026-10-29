@@ -1,0 +1,142 @@
+@model Experiment7.Models.FeedbackSummaryViewModel
+
+<div class="row g-3 mb-4">
+    <!-- Stat 1: Total Feedbacks -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-chat-left-text-fill"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.TotalFeedbacks</div>
+                <div class="stat-label">Total Feedbacks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 2: Average Rating -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="bi bi-star-fill"></i>
+            </div>
+            <div>
+                <div class="stat-value d-flex align-items-baseline gap-1">
+                    @Model.AverageRating.ToString("0.0")
+                    <span class="fs-6 text-muted fw-normal">/ 5.0</span>
+                </div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 3: Recommendation Rate -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="bi bi-hand-thumbs-up-fill"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.RecommendationRate%</div>
+                <div class="stat-label">Recommend Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 4: Pending / Review Pipeline -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon secondary">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.NewCount <span class="fs-6 text-muted fw-normal">new</span></div>
+                <div class="stat-label">@Model.UnderReviewCount In Review &bull; @Model.ResolvedCount Resolved</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Rating & Category Analysis Row -->
+<div class="row g-3 mb-4">
+    <!-- Rating Distribution Card -->
+    <div class="col-lg-7">
+        <div class="app-card h-100">
+            <div class="app-card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-bar-chart-fill text-warning"></i>
+                    Rating Distribution Breakdown
+                </h6>
+                <span class="badge bg-light text-muted border">1 - 5 Stars</span>
+            </div>
+            <div class="app-card-body">
+                @for (int r = 5; r >= 1; r--)
+                {
+                    var count = Model.RatingDistribution.ContainsKey(r) ? Model.RatingDistribution[r] : 0;
+                    var pct = Model.TotalFeedbacks > 0 ? (double)count / Model.TotalFeedbacks * 100 : 0;
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="d-flex align-items-center gap-1 text-muted" style="width: 65px;">
+                            <span class="fw-bold text-dark">@r</span>
+                            <span class="text-warning">&#9733;</span>
+                        </div>
+                        <div class="rating-bar-track">
+                            <div class="rating-bar-fill" style="width: @pct%;"></div>
+                        </div>
+                        <div class="text-end font-monospace text-muted small" style="width: 75px;">
+                            <span class="fw-bold text-dark">@count</span> (@Math.Round(pct)%)
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Sentiment & Categories Snapshot Card -->
+    <div class="col-lg-5">
+        <div class="app-card h-100">
+            <div class="app-card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-pie-chart-fill text-primary"></i>
+                    Sentiment &amp; Category Split
+                </h6>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Summary Partial</span>
+            </div>
+            <div class="app-card-body d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Sentiment Row -->
+                    <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3 bg-light">
+                        <div class="text-center flex-fill border-end">
+                            <span class="d-block small text-muted">Positive</span>
+                            <span class="fw-bold text-success fs-5">@Model.PositiveCount</span>
+                        </div>
+                        <div class="text-center flex-fill border-end">
+                            <span class="d-block small text-muted">Neutral</span>
+                            <span class="fw-bold text-warning fs-5">@Model.NeutralCount</span>
+                        </div>
+                        <div class="text-center flex-fill">
+                            <span class="d-block small text-muted">Negative</span>
+                            <span class="fw-bold text-danger fs-5">@Model.NegativeCount</span>
+                        </div>
+                    </div>
+
+                    <!-- Category Pills with counts -->
+                    <div class="small fw-bold text-muted text-uppercase mb-2">Top Categories</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var cat in Model.CategoryBreakdown)
+                        {
+                            <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1 p-2">
+                                <span>@cat.Key</span>
+                                <span class="badge bg-primary rounded-pill">@cat.Value</span>
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-3 pt-2 border-top text-muted small d-flex align-items-center justify-content-between">
+                    <span>Overall Health: <strong>@(Model.AverageRating >= 4.0 ? "Excellent" : Model.AverageRating >= 3.0 ? "Healthy" : "Needs Attention")</strong></span>
+                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> Live Sync</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

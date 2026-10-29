@@ -1,0 +1,91 @@
+@model Experiment7.Models.FeedbackModel
+
+@{
+    ViewData["Title"] = "Submit Feedback";
+}
+
+<!-- Breadcrumbs & Header -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Feedback Hub</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Submit Feedback</li>
+            </ol>
+        </nav>
+        <h2 class="fw-extrabold text-dark mb-0">Share Your Feedback</h2>
+        <p class="text-muted mb-0">Your honest evaluation directly guides continuous curriculum and campus enhancements.</p>
+    </div>
+    <div>
+        @Html.ActionLink("Back to Dashboard", "Index", "Feedback", null, new { @class = "btn btn-secondary-custom d-inline-flex align-items-center gap-1" })
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Main Form Column: Demonstrates Rendering the Partial View -->
+    <div class="col-lg-8">
+        @* Renders the strongly-typed Partial View _FeedbackForm using Razor Helper *@
+        @await Html.PartialAsync("_FeedbackForm", Model)
+    </div>
+
+    <!-- Educational & Architectural Sidebar -->
+    <div class="col-lg-4">
+        <!-- Guidelines Card -->
+        <div class="app-card mb-4">
+            <div class="app-card-header bg-light-subtle">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-lightbulb-fill text-warning"></i>
+                    Constructive Feedback Guidelines
+                </h6>
+            </div>
+            <div class="app-card-body small text-muted">
+                <ul class="ps-3 mb-0 d-flex flex-column gap-2">
+                    <li><strong>Be Specific:</strong> Mention specific modules, lab sessions, or facilities.</li>
+                    <li><strong>Actionable Suggestions:</strong> Highlight constructive suggestions for improvements.</li>
+                    <li><strong>Confidentiality:</strong> Submissions are processed by department quality assurance.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MVC Architecture Showcase Card -->
+        <div class="app-card mb-4 border-primary-subtle bg-primary-subtle bg-opacity-10">
+            <div class="app-card-header bg-white">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2 text-primary">
+                    <i class="bi bi-code-slash"></i>
+                    MVC Architecture Concepts
+                </h6>
+            </div>
+            <div class="app-card-body small">
+                <div class="mb-3">
+                    <span class="badge bg-primary text-white mb-1">1. Master Layout</span>
+                    <p class="text-muted mb-0">
+                        <code>_Layout.cshtml</code> manages the header, responsive navbar, dynamic notifications partial, and footer template.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-success text-white mb-1">2. Partial View</span>
+                    <p class="text-muted mb-0">
+                        Form is encapsulated within <code>_FeedbackForm.cshtml</code> and loaded cleanly via <code>@@await Html.PartialAsync("_FeedbackForm", Model)</code>.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark mb-1">3. Strongly-Typed Helpers</span>
+                    <p class="text-muted mb-0">
+                        Built using <code>Html.BeginForm</code>, <code>Html.TextBoxFor</code>, <code>Html.DropDownListFor</code>, <code>Html.RadioButtonFor</code>, and <code>Html.ValidationMessageFor</code>.
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-danger text-white mb-1">4. Dual-Layer Validation</span>
+                    <p class="text-muted mb-0">
+                        Client-side unobtrusive validation via jQuery Validation, and server-side model validation with <code>ModelState.IsValid</code>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Injects jQuery Unobtrusive Validation into _Layout's Scripts section -->
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

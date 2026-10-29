@@ -1,0 +1,112 @@
+@model IEnumerable<Experiment7.Models.FeedbackModel>
+
+<div class="app-card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="ps-3 py-3 text-muted text-uppercase small fw-bold">ID</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Submitter</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Category</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Rating</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Comments Preview</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Status</th>
+                    <th scope="col" class="py-3 text-muted text-uppercase small fw-bold">Date</th>
+                    <th scope="col" class="pe-3 py-3 text-muted text-uppercase small fw-bold text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                            <h6 class="fw-semibold">No feedback records found</h6>
+                            <p class="small mb-0">Try clearing your filters or submit a new feedback.</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 font-monospace fw-bold text-dark">
+                                #@item.Id.ToString("D4")
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm flex-shrink-0"
+                                         style="width: 34px; height: 34px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); font-size: 0.85rem;">
+                                        @(!string.IsNullOrEmpty(item.FullName) ? item.FullName.Substring(0, 1).ToUpper() : "U")
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.FullName</div>
+                                        <small class="text-muted d-block">@item.Email &bull; @item.ContactNumber</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-category text-nowrap">
+                                    @item.Category
+                                </span>
+                            </td>
+                            <td>
+                                <div class="star-display" title="@item.Rating out of 5">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= item.Rating)
+                                        {
+                                            <span>&#9733;</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="star-empty">&#9733;</span>
+                                        }
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-truncate d-inline-block text-muted" style="max-width: 240px;" title="@item.Comments">
+                                    @item.Comments
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-status @(item.Status switch {
+                                    Experiment7.Models.FeedbackStatus.New => "badge-status-new",
+                                    Experiment7.Models.FeedbackStatus.UnderReview => "badge-status-underreview",
+                                    Experiment7.Models.FeedbackStatus.Resolved => "badge-status-resolved",
+                                    _ => "badge-status-archived"
+                                })">
+                                    <span class="sentiment-dot @(item.Sentiment switch {
+                                        Experiment7.Models.SentimentType.Positive => "sentiment-positive",
+                                        Experiment7.Models.SentimentType.Neutral => "sentiment-neutral",
+                                        _ => "sentiment-negative"
+                                    })"></span>
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td class="text-muted small text-nowrap">
+                                @item.CreatedAt.ToString("MMM dd, yyyy")
+                            </td>
+                            <td class="pe-3 text-end text-nowrap">
+                                <div class="d-inline-flex align-items-center gap-1">
+                                    @* HTML Helper: ActionLink to Details *@
+                                    @Html.ActionLink("View", "Details", "Feedback", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-primary" })
+
+                                    <form asp-controller="Feedback" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Delete feedback #@item.Id?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                        <button type="submit" class="btn btn-action-icon delete" title="Delete">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

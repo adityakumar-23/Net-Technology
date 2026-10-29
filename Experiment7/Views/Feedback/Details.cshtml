@@ -1,0 +1,212 @@
+@model Experiment7.Models.FeedbackModel
+
+@{
+    ViewData["Title"] = $"Feedback #{Model.Id:D4} Details";
+}
+
+<!-- Breadcrumbs & Navigation -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Feedback Hub</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Ticket #@Model.Id.ToString("D4")</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center gap-3">
+            <h2 class="fw-extrabold text-dark mb-0">Feedback Ticket #@Model.Id.ToString("D4")</h2>
+            <span class="badge-status @(Model.Status switch {
+                Experiment7.Models.FeedbackStatus.New => "badge-status-new",
+                Experiment7.Models.FeedbackStatus.UnderReview => "badge-status-underreview",
+                Experiment7.Models.FeedbackStatus.Resolved => "badge-status-resolved",
+                _ => "badge-status-archived"
+            }) fs-6">
+                <span class="sentiment-dot @(Model.Sentiment switch {
+                    Experiment7.Models.SentimentType.Positive => "sentiment-positive",
+                    Experiment7.Models.SentimentType.Neutral => "sentiment-neutral",
+                    _ => "sentiment-negative"
+                })"></span>
+                @Model.Status
+            </span>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        @Html.ActionLink("Back to Feedbacks", "Index", "Feedback", null, new { @class = "btn btn-secondary-custom" })
+        <a asp-action="Create" class="btn btn-primary-custom d-flex align-items-center gap-2">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>New Submission</span>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Main Details Column -->
+    <div class="col-lg-8">
+        <div class="app-card mb-4">
+            <div class="app-card-header bg-light-subtle d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary text-white p-2 rounded-circle">
+                        <i class="bi bi-file-text-fill"></i>
+                    </span>
+                    <h5 class="mb-0 fw-bold">Feedback Details</h5>
+                </div>
+                <div class="star-display fs-5">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Model.Rating)
+                        {
+                            <span>&#9733;</span>
+                        }
+                        else
+                        {
+                            <span class="star-empty">&#9733;</span>
+                        }
+                    }
+                    <span class="ms-2 fs-6 text-dark fw-bold">@Model.Rating / 5</span>
+                </div>
+            </div>
+
+            <div class="app-card-body p-4">
+                <!-- Category & Recommendation Badges -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+                    <span class="badge-category fs-6 py-2 px-3">
+                        <i class="bi bi-tag-fill me-2 text-primary"></i>@Model.Category
+                    </span>
+                    @if (Model.WouldRecommend)
+                    {
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fs-6 py-2 px-3 d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-hand-thumbs-up-fill"></i> Recommend Service
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-6 py-2 px-3 d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-hand-thumbs-down-fill"></i> Not Recommended
+                        </span>
+                    }
+                </div>
+
+                <!-- Full Comments Section -->
+                <div class="mb-4">
+                    <label class="text-uppercase small fw-bold text-muted d-block mb-2">Submitted Comments</label>
+                    <div class="p-4 rounded-3 bg-light border border-slate-200">
+                        <p class="fs-5 mb-0 text-dark lh-base font-monospace" style="white-space: pre-line;">
+                            @Model.Comments
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Reviewer / Admin Resolution Notes -->
+                <div class="p-3 rounded-3 bg-light-subtle border">
+                    <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-journal-check text-success"></i>
+                        Administrative Review &amp; Resolution Notes
+                    </h6>
+                    @if (!string.IsNullOrWhiteSpace(Model.AdminNotes))
+                    {
+                        <p class="mb-0 text-muted small">@Model.AdminNotes</p>
+                    }
+                    else
+                    {
+                        <p class="mb-0 text-muted small fst-italic">No administrative notes recorded yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar: Submitter Info & Management Actions -->
+    <div class="col-lg-4">
+        <!-- Submitter Info Card -->
+        <div class="app-card mb-4">
+            <div class="app-card-header bg-light-subtle">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-person-badge-fill text-primary"></i>
+                    Submitter Information
+                </h6>
+            </div>
+            <div class="app-card-body">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm flex-shrink-0"
+                         style="width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); font-size: 1.25rem;">
+                        @(!string.IsNullOrEmpty(Model.FullName) ? Model.FullName.Substring(0, 1).ToUpper() : "U")
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-dark">@Model.FullName</h6>
+                        <small class="text-muted">Registered Feedback Submitter</small>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3">
+                    <div class="mb-2">
+                        <span class="text-muted small d-block">Email Address</span>
+                        <a href="mailto:@Model.Email" class="fw-semibold text-decoration-none text-dark">
+                            <i class="bi bi-envelope me-1 text-primary"></i>@Model.Email
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-muted small d-block">Contact Phone</span>
+                        <a href="tel:@Model.ContactNumber" class="fw-semibold text-decoration-none text-dark">
+                            <i class="bi bi-telephone me-1 text-primary"></i>@Model.ContactNumber
+                        </a>
+                    </div>
+                    <div>
+                        <span class="text-muted small d-block">Submission Timestamp</span>
+                        <span class="fw-semibold text-dark">
+                            <i class="bi bi-calendar-event me-1 text-primary"></i>@Model.CreatedAt.ToString("f")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management / Status Update Card -->
+        <div class="app-card mb-4">
+            <div class="app-card-header bg-light-subtle">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-gear-fill text-secondary"></i>
+                    Ticket Status Control
+                </h6>
+            </div>
+            <div class="app-card-body">
+                <form asp-action="UpdateStatus" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="ticketStatus">Update Status</label>
+                        <select name="status" id="ticketStatus" class="form-select">
+                            <option value="@Experiment7.Models.FeedbackStatus.New" selected="@(Model.Status == Experiment7.Models.FeedbackStatus.New ? "selected" : null)">New</option>
+                            <option value="@Experiment7.Models.FeedbackStatus.UnderReview" selected="@(Model.Status == Experiment7.Models.FeedbackStatus.UnderReview ? "selected" : null)">Under Review</option>
+                            <option value="@Experiment7.Models.FeedbackStatus.Resolved" selected="@(Model.Status == Experiment7.Models.FeedbackStatus.Resolved ? "selected" : null)">Resolved</option>
+                            <option value="@Experiment7.Models.FeedbackStatus.Archived" selected="@(Model.Status == Experiment7.Models.FeedbackStatus.Archived ? "selected" : null)">Archived</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="adminNotes">Reviewer Notes</label>
+                        <textarea name="adminNotes" id="adminNotes" rows="3" class="form-control" placeholder="Add resolution details or followup remarks...">@Model.AdminNotes</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-check2-circle"></i>
+                        <span>Update Ticket</span>
+                    </button>
+                </form>
+
+                <hr />
+
+                <!-- Delete Feedback Action -->
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you certain you wish to permanently delete this feedback?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Feedback")" />
+                    <button type="submit" class="btn btn-outline-danger w-100 btn-sm d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-trash3-fill"></i>
+                        <span>Delete Feedback Record</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
