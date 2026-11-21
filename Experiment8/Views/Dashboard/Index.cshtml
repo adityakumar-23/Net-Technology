@@ -1,0 +1,292 @@
+@model Experiment8.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Executive Inventory Dashboard";
+}
+
+<div class="dashboard-header mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2 class="fw-bold tracking-tight text-dark mb-1">Inventory Overview</h2>
+        <p class="text-muted mb-0 small">Real-time inventory metrics, stock valuation, and activity monitoring powered by ADO.NET.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-3 shadow-xs">
+            <i class="bi bi-list-ul me-1"></i> Full Catalog
+        </a>
+        <a asp-controller="Product" asp-action="Create" class="btn btn-primary btn-sm rounded-pill px-3 shadow-xs">
+            <i class="bi bi-plus-circle me-1"></i> Add Product
+        </a>
+    </div>
+</div>
+
+<!-- Low Stock Alert Banner (Dynamic) -->
+@if (Model.LowStockProductsCount > 0)
+{
+    <div class="alert alert-warning border-warning border-opacity-25 shadow-sm rounded-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-4" role="alert">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-warning text-dark rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            </div>
+            <div>
+                <h6 class="mb-0 fw-bold text-dark">Low Stock Attention Required!</h6>
+                <small class="text-muted">There are <strong>@Model.LowStockProductsCount product(s)</strong> running low on stock (&le; 10 units). Replenishment recommended.</small>
+            </div>
+        </div>
+        <a asp-controller="Product" asp-action="Index" asp-route-stockStatus="LowStock" class="btn btn-warning btn-sm rounded-pill px-3 fw-semibold">
+            View Low Stock Items <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+}
+
+<!-- Key Metric KPI Cards -->
+<div class="row g-3 mb-4">
+    <!-- 1. Total Products -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card border-0 shadow-sm rounded-3 h-100 overflow-hidden">
+            <div class="card-body p-4 position-relative">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-uppercase text-secondary fw-semibold small tracking-wider" style="font-size: 0.72rem;">Total Products</span>
+                    <div class="metric-icon-wrapper bg-primary-subtle text-primary rounded-3 p-2">
+                        <i class="bi bi-box-seam fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalProducts</h3>
+                <div class="d-flex align-items-center text-muted small">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle me-1">Active</span>
+                    <span>Distinct SKUs in Catalog</span>
+                </div>
+                <div class="metric-card-progress mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Total Stock Units -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card border-0 shadow-sm rounded-3 h-100 overflow-hidden">
+            <div class="card-body p-4 position-relative">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-uppercase text-secondary fw-semibold small tracking-wider" style="font-size: 0.72rem;">Total Stock Units</span>
+                    <div class="metric-icon-wrapper bg-success-subtle text-success rounded-3 p-2">
+                        <i class="bi bi-stack fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalStock.ToString("N0")</h3>
+                <div class="d-flex align-items-center text-muted small">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle me-1">In Warehouse</span>
+                    <span>Physical available units</span>
+                </div>
+                <div class="metric-card-progress mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Low Stock Items -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card border-0 shadow-sm rounded-3 h-100 overflow-hidden">
+            <div class="card-body p-4 position-relative">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-uppercase text-secondary fw-semibold small tracking-wider" style="font-size: 0.72rem;">Low Stock Warning</span>
+                    <div class="metric-icon-wrapper bg-warning-subtle text-warning rounded-3 p-2">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.LowStockProductsCount</h3>
+                <div class="d-flex align-items-center text-muted small">
+                    @if (Model.LowStockProductsCount > 0)
+                    {
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-1">Needs Reorder</span>
+                        <span>Threshold &le; 10 units</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success-subtle text-success me-1">All Optimal</span>
+                        <span>No items critical</span>
+                    }
+                </div>
+                <div class="metric-card-progress mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: @(Model.TotalProducts > 0 ? (Model.LowStockProductsCount * 100 / Model.TotalProducts) : 0)%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Total Inventory Value -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card border-0 shadow-sm rounded-3 h-100 overflow-hidden">
+            <div class="card-body p-4 position-relative">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-uppercase text-secondary fw-semibold small tracking-wider" style="font-size: 0.72rem;">Total Inventory Value</span>
+                    <div class="metric-icon-wrapper bg-purple-subtle text-purple rounded-3 p-2" style="background-color: #f3e8ff; color: #7e22ce;">
+                        <i class="bi bi-currency-rupee fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">₹@Model.TotalInventoryValue.ToString("N2")</h3>
+                <div class="d-flex align-items-center text-muted small">
+                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle me-1">Calculated</span>
+                    <span>&Sigma; (Quantity &times; Price)</span>
+                </div>
+                <div class="metric-card-progress mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar" role="progressbar" style="width: 100%; background-color: #9333ea;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Split Section: Recent Activities & Category Breakdown -->
+<div class="row g-4">
+    <!-- Left Column: Recent Product Activities -->
+    <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history text-primary fs-5"></i>
+                    <h5 class="mb-0 fw-bold text-dark">Recent Product Activities</h5>
+                </div>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-link btn-sm text-decoration-none p-0">View All &rarr;</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentProducts != null && Model.RecentProducts.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Product</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Unit Price</th>
+                                    <th>Date Added</th>
+                                    <th class="text-end pe-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in Model.RecentProducts)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="product-avatar bg-light border rounded-2 p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                                    <i class="bi bi-box text-secondary"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-semibold text-dark d-block">@p.ProductName</span>
+                                                    <small class="text-muted">Supplier: @p.SupplierName</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border">@p.Category</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge @p.StockStatusBadgeClass">@p.StockStatusText</span>
+                                        </td>
+                                        <td class="fw-medium text-dark">₹@p.Price.ToString("N2")</td>
+                                        <td class="text-muted small">@p.CreatedDate.ToString("dd MMM yyyy")</td>
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group btn-group-sm">
+                                                <a asp-controller="Product" asp-action="Details" asp-route-id="@p.ProductID" class="btn btn-outline-secondary" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@p.ProductID" class="btn btn-outline-primary" title="Edit Product">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox text-muted fs-1 mb-2 d-block"></i>
+                        <p class="text-muted mb-0">No product activities recorded yet.</p>
+                        <a asp-controller="Product" asp-action="Create" class="btn btn-primary btn-sm mt-2">Add Your First Product</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Category Distribution & System Stack -->
+    <div class="col-12 col-lg-4">
+        <!-- Category Distribution -->
+        <div class="card border-0 shadow-sm rounded-3 mb-4">
+            <div class="card-header bg-white py-3 px-4 d-flex align-items-center gap-2 border-bottom">
+                <i class="bi bi-pie-chart-fill text-primary fs-5"></i>
+                <h5 class="mb-0 fw-bold text-dark">Category Breakdown</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (Model.CategoryCounts != null && Model.CategoryCounts.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var kvp in Model.CategoryCounts)
+                        {
+                            var percentage = Model.TotalProducts > 0 ? (kvp.Value * 100 / Model.TotalProducts) : 0;
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1 small">
+                                    <span class="fw-medium text-dark">@kvp.Key</span>
+                                    <span class="text-muted">@kvp.Value item(s) (@percentage%)</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @percentage%"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted small mb-0">No categories found in database.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Technical Architecture Card -->
+        <div class="card border-0 shadow-sm rounded-3 bg-white">
+            <div class="card-header bg-white py-3 px-4 d-flex align-items-center gap-2 border-bottom">
+                <i class="bi bi-cpu-fill text-success fs-5"></i>
+                <h5 class="mb-0 fw-bold text-dark">Architecture Details</h5>
+            </div>
+            <div class="card-body p-4 small">
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                    <li class="d-flex justify-content-between py-1 border-bottom border-light">
+                        <span class="text-muted">Framework:</span>
+                        <span class="fw-semibold text-dark">ASP.NET Core MVC (net10.0)</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-1 border-bottom border-light">
+                        <span class="text-muted">Data Access:</span>
+                        <span class="fw-semibold text-primary">Pure ADO.NET (No EF Core)</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-1 border-bottom border-light">
+                        <span class="text-muted">Database Engine:</span>
+                        <span class="fw-semibold text-dark">Microsoft SQL Server</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-1 border-bottom border-light">
+                        <span class="text-muted">Database Name:</span>
+                        <span class="badge bg-secondary-subtle text-secondary font-monospace">InventoryDB</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-1">
+                        <span class="text-muted">SQL Client:</span>
+                        <span class="badge bg-info-subtle text-info-emphasis font-monospace">Microsoft.Data.SqlClient</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

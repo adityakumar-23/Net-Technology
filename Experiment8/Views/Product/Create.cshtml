@@ -1,0 +1,145 @@
+@model Experiment8.Models.Product
+@{
+    ViewData["Title"] = "Add New Product";
+    var categoryList = ViewBag.Categories as List<string> ?? new List<string>();
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-9 col-xl-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold tracking-tight text-dark mb-1">Add New Product</h2>
+                <p class="text-muted mb-0 small">Enter the product details below to create a new inventory record via ADO.NET.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="bi bi-arrow-left me-1"></i> Back to Catalog
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle-fill text-primary"></i>
+                <h6 class="mb-0 fw-bold text-dark">Product Information Form</h6>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" id="createProductForm">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-xs mb-4" role="alert"></div>
+
+                    <div class="row g-3 mb-3">
+                        <!-- Product Name -->
+                        <div class="col-12 col-md-8">
+                            <label asp-for="ProductName" class="form-label fw-semibold small text-dark"></label> <span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-tag-fill"></i></span>
+                                <input asp-for="ProductName" class="form-control" placeholder="e.g. Dell Latitude 5440 Laptop" />
+                            </div>
+                            <span asp-validation-for="ProductName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-12 col-md-4">
+                            <label asp-for="Category" class="form-label fw-semibold small text-dark"></label> <span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-folder-fill"></i></span>
+                                <input asp-for="Category" class="form-control" list="categoryOptions" placeholder="Select or type..." />
+                                <datalist id="categoryOptions">
+                                    <option value="Electronics"></option>
+                                    <option value="Office Equipment"></option>
+                                    <option value="Accessories"></option>
+                                    <option value="Networking"></option>
+                                    <option value="Computer Hardware"></option>
+                                    <option value="Peripherals"></option>
+                                    @foreach (var c in categoryList)
+                                    {
+                                        <option value="@c"></option>
+                                    }
+                                </datalist>
+                            </div>
+                            <span asp-validation-for="Category" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <!-- Quantity -->
+                        <div class="col-12 col-md-4">
+                            <label asp-for="Quantity" class="form-label fw-semibold small text-dark"></label> <span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-stack"></i></span>
+                                <input asp-for="Quantity" type="number" min="0" step="1" id="inputQuantity" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Quantity" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-12 col-md-4">
+                            <label asp-for="Price" class="form-label fw-semibold small text-dark"></label> <span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted">₹</span>
+                                <input asp-for="Price" type="number" min="0.01" step="0.01" id="inputPrice" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Live Calculated Total Value -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold small text-muted">Est. Inventory Value</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-calculator"></i></span>
+                                <input type="text" id="displayTotalValue" class="form-control bg-light fw-bold text-dark" readonly value="₹0.00" />
+                            </div>
+                            <small class="text-muted" style="font-size: 0.7rem;">Auto-computed: Qty &times; Price</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <!-- Supplier Name -->
+                        <div class="col-12">
+                            <label asp-for="SupplierName" class="form-label fw-semibold small text-dark"></label> <span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-truck"></i></span>
+                                <input asp-for="SupplierName" class="form-control" placeholder="e.g. Dell Direct India / Global Tech Distribution" />
+                            </div>
+                            <span asp-validation-for="SupplierName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold small text-dark"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter optional product specifications, serial batch, or notes..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4 border-light">
+
+                    <div class="d-flex align-items-center justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                            <i class="bi bi-check-lg me-1"></i> Save to Database
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            function updateValuation() {
+                var qty = parseFloat($('#inputQuantity').val()) || 0;
+                var price = parseFloat($('#inputPrice').val()) || 0;
+                var total = (qty * price).toFixed(2);
+                $('#displayTotalValue').val('₹' + Number(total).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+            }
+
+            $('#inputQuantity, #inputPrice').on('input change', updateValuation);
+            updateValuation();
+        });
+    </script>
+}
+

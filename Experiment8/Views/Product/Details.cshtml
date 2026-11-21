@@ -1,0 +1,104 @@
+@model Experiment8.Models.Product
+@{
+    ViewData["Title"] = $"Product Details - {Model.ProductName}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold tracking-tight text-dark mb-1">Product Details</h2>
+                <p class="text-muted mb-0 small">Comprehensive inventory specifications for SKU #@Model.ProductID.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.ProductID" class="btn btn-primary btn-sm rounded-pill px-3 shadow-xs">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+            <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="bi bi-box fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold text-dark">@Model.ProductName</h5>
+                        <small class="text-muted">Category: <span class="badge bg-light text-dark border">@Model.Category</span></small>
+                    </div>
+                </div>
+                <span class="badge @Model.StockStatusBadgeClass fs-6 px-3 py-2">
+                    @Model.StockStatusText
+                </span>
+            </div>
+            <div class="card-body p-4">
+                <!-- Financial Summary Highlight Box -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-4">
+                        <div class="bg-light p-3 rounded-3 text-center border">
+                            <span class="text-muted small d-block">Unit Price</span>
+                            <h4 class="fw-bold text-dark mb-0">₹@Model.Price.ToString("N2")</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="bg-light p-3 rounded-3 text-center border">
+                            <span class="text-muted small d-block">Quantity in Stock</span>
+                            <h4 class="fw-bold text-dark mb-0">@Model.Quantity units</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="bg-primary-subtle p-3 rounded-3 text-center border border-primary-subtle">
+                            <span class="text-primary-emphasis small d-block fw-medium">Total Inventory Value</span>
+                            <h4 class="fw-bold text-primary mb-0">₹@Model.TotalValue.ToString("N2")</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Specifications Table -->
+                <h6 class="fw-bold text-dark mb-3">Specifications & Metadata</h6>
+                <table class="table table-bordered mb-4">
+                    <tbody>
+                        <tr>
+                            <th class="bg-light text-muted w-25">Product ID</th>
+                            <td class="font-monospace">#@Model.ProductID</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-muted">Product Name</th>
+                            <td class="fw-semibold">@Model.ProductName</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-muted">Category</th>
+                            <td>@Model.Category</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-muted">Supplier Name</th>
+                            <td><i class="bi bi-truck me-1 text-muted"></i> @Model.SupplierName</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-muted">Created Timestamp</th>
+                            <td><i class="bi bi-calendar3 me-1 text-muted"></i> @Model.CreatedDate.ToString("dd MMMM yyyy, hh:mm tt")</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-muted">Description</th>
+                            <td>@(string.IsNullOrWhiteSpace(Model.Description) ? "No description provided." : Model.Description)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex align-items-center justify-content-between pt-2">
+                    <a asp-action="Delete" asp-route-id="@Model.ProductID" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i> Delete this Product
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">
+                        Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

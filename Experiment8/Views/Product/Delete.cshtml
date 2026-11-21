@@ -1,0 +1,68 @@
+@model Experiment8.Models.Product
+@{
+    ViewData["Title"] = $"Delete Product - {Model.ProductName}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-7">
+        <div class="card border-danger shadow-sm rounded-3 overflow-hidden">
+            <div class="card-header bg-danger text-white py-3 px-4 d-flex align-items-center gap-2">
+                <i class="bi bi-exclamation-octagon-fill fs-5"></i>
+                <h5 class="mb-0 fw-bold">Confirm Product Deletion</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-warning border-warning border-opacity-25 d-flex align-items-center gap-2 mb-4">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>
+                    <div>
+                        <strong>Warning:</strong> You are about to permanently remove this product from the SQL Server database. This action cannot be undone.
+                    </div>
+                </div>
+
+                <h5 class="fw-bold text-dark mb-3">Product Summary</h5>
+                <ul class="list-group list-group-flush mb-4 border rounded-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Product ID:</span>
+                        <span class="font-monospace fw-bold">#@Model.ProductID</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Product Name:</span>
+                        <span class="fw-semibold text-dark">@Model.ProductName</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Category:</span>
+                        <span class="badge bg-light text-dark border">@Model.Category</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Stock Quantity:</span>
+                        <span class="badge @Model.StockStatusBadgeClass">@Model.Quantity units</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Unit Price:</span>
+                        <span class="fw-medium">₹@Model.Price.ToString("N2")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Total Stock Valuation:</span>
+                        <span class="fw-bold text-dark">₹@Model.TotalValue.ToString("N2")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Supplier:</span>
+                        <span>@Model.SupplierName</span>
+                    </li>
+                </ul>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ProductID" />
+
+                    <div class="d-flex align-items-center justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+                        <button type="submit" class="btn btn-danger px-4 shadow-sm">
+                            <i class="bi bi-trash-fill me-1"></i> Yes, Delete Permanently
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
