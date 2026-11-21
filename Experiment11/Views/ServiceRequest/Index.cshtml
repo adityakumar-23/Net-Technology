@@ -1,0 +1,193 @@
+﻿@model IEnumerable<SmartCampusPortal.Models.ServiceRequest>
+@{
+    ViewBag.Title = "Service Requests";
+    string currentSearch = ViewBag.CurrentSearch as string ?? "";
+    string currentCat = ViewBag.CurrentCategory as string ?? "All";
+    string currentStat = ViewBag.CurrentStatus as string ?? "All";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Smart Campus Service Requests</h3>
+        <p class="text-muted mb-0">Manage, search, and track student and faculty maintenance tickets.</p>
+    </div>
+    <div>
+        <a href="@Url.Action("Create")" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Service Request
+        </a>
+    </div>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="modern-card mb-4 p-3">
+    @using (Html.BeginForm("Index", "ServiceRequest", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+    {
+        <div class="col-md-5">
+            <label class="form-label small fw-bold text-muted">Search Requests</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="search" value="@currentSearch" class="form-control border-start-0" placeholder="Search by student name, title, department..." />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted">Service Category</label>
+            <select name="category" class="form-select">
+                <option value="All" @(currentCat == "All" ? "selected" : "")>All Categories</option>
+                <option value="IT Support" @(currentCat == "IT Support" ? "selected" : "")>IT Support</option>
+                <option value="Electrical Maintenance" @(currentCat == "Electrical Maintenance" ? "selected" : "")>Electrical Maintenance</option>
+                <option value="Hostel Maintenance" @(currentCat == "Hostel Maintenance" ? "selected" : "")>Hostel Maintenance</option>
+                <option value="Library Services" @(currentCat == "Library Services" ? "selected" : "")>Library Services</option>
+                <option value="Classroom Maintenance" @(currentCat == "Classroom Maintenance" ? "selected" : "")>Classroom Maintenance</option>
+                <option value="Other Services" @(currentCat == "Other Services" ? "selected" : "")>Other Services</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">Status</label>
+            <select name="status" class="form-select">
+                <option value="All" @(currentStat == "All" ? "selected" : "")>All Statuses</option>
+                <option value="Pending" @(currentStat == "Pending" ? "selected" : "")>Pending</option>
+                <option value="In Progress" @(currentStat == "In Progress" ? "selected" : "")>In Progress</option>
+                <option value="Completed" @(currentStat == "Completed" ? "selected" : "")>Completed</option>
+                <option value="Rejected" @(currentStat == "Rejected" ? "selected" : "")>Rejected</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fa-solid fa-filter me-1"></i> Filter
+            </button>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary" title="Reset Filters">
+                <i class="fa-solid fa-rotate-left"></i>
+            </a>
+        </div>
+    }
+</div>
+
+<!-- Requests Table Card -->
+<div class="modern-card">
+    <div class="modern-card-header">
+        <h5 class="mb-0">
+            <i class="fa-solid fa-list-ul text-primary me-2"></i>Service Tickets
+            <span class="badge bg-primary bg-opacity-10 text-primary ms-2 rounded-pill">@Model.Count() records</span>
+        </h5>
+        <div class="small text-muted">
+            Click on any action to update status or edit ticket
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th>Student Details</th>
+                    <th>Category</th>
+                    <th>Request Details</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th class="text-end" style="min-width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong class="text-primary">#@item.RequestId</strong>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.StudentName</div>
+                                <div class="text-muted small"><i class="fa-solid fa-envelope me-1"></i>@item.StudentEmail</div>
+                                <div class="text-muted small"><i class="fa-solid fa-building-columns me-1"></i>@item.Department</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="fa-solid fa-tag me-1 text-primary"></i>@item.ServiceCategory
+                                </span>
+                            </td>
+                            <td style="max-width: 260px;">
+                                <div class="fw-semibold text-dark text-truncate" title="@item.RequestTitle">@item.RequestTitle</div>
+                                <small class="text-muted text-truncate d-block" title="@item.Description">@item.Description</small>
+                                @if (!string.IsNullOrEmpty(item.AdminRemarks))
+                                {
+                                    <div class="mt-1 small text-info"><i class="fa-solid fa-comment-dots me-1"></i>Remark: @item.AdminRemarks</div>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Priority == "High")
+                                {
+                                    <span class="priority-high"><i class="fa-solid fa-triangle-exclamation me-1"></i>High</span>
+                                }
+                                else if (item.Priority == "Medium")
+                                {
+                                    <span class="priority-medium"><i class="fa-solid fa-circle-dot me-1"></i>Medium</span>
+                                }
+                                else
+                                {
+                                    <span class="priority-low"><i class="fa-solid fa-arrow-down me-1"></i>Low</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Status == "Pending")
+                                {
+                                    <span class="badge-pending"><i class="fa-solid fa-hourglass me-1"></i>Pending</span>
+                                }
+                                else if (item.Status == "In Progress")
+                                {
+                                    <span class="badge-progress"><i class="fa-solid fa-spinner me-1"></i>In Progress</span>
+                                }
+                                else if (item.Status == "Completed")
+                                {
+                                    <span class="badge-completed"><i class="fa-solid fa-check me-1"></i>Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-rejected"><i class="fa-solid fa-xmark me-1"></i>Rejected</span>
+                                }
+                            </td>
+                            <td>
+                                <small class="text-muted">@item.RequestDate.ToString("dd MMM yyyy")</small><br />
+                                <small class="text-muted" style="font-size: 0.75rem;">@item.RequestDate.ToString("hh:mm tt")</small>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="@Url.Action("Details", new { id = item.RequestId })" class="btn btn-outline-secondary" title="View Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a href="@Url.Action("Edit", new { id = item.RequestId })" class="btn btn-outline-secondary" title="Edit Request">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </a>
+                                    <a href="@Url.Action("UpdateStatus", new { id = item.RequestId })" class="btn btn-outline-primary" title="Update Status">
+                                        <i class="fa-solid fa-sliders"></i>
+                                    </a>
+                                    <a href="@Url.Action("Delete", new { id = item.RequestId })" class="btn btn-outline-danger" title="Delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-inbox fs-1 d-block mb-3 text-secondary"></i>
+                            <h5>No Service Requests Found</h5>
+                            <p class="small text-muted mb-3">Try adjusting your search criteria or create a new service ticket.</p>
+                            <a href="@Url.Action("Create")" class="btn btn-primary btn-sm rounded-pill px-3">
+                                <i class="fa-solid fa-plus me-1"></i> Create First Request
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

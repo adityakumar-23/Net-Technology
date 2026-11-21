@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Smart Campus Service Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+            --content-bg: #f8fafc;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--content-bg);
+            color: #334155;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+        }
+
+        .sidebar-brand i {
+            font-size: 1.6rem;
+            color: #60a5fa;
+        }
+
+        .sidebar-brand h5 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand small {
+            color: #94a3b8;
+            font-size: 0.72rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            list-style: none;
+            margin: 0;
+        }
+
+        .nav-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 12px 14px 6px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover {
+            color: #fff;
+            background: var(--sidebar-hover);
+        }
+
+        .sidebar-link.active {
+            color: #fff;
+            background: var(--sidebar-active);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .sidebar-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Wrapper */
+        #main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 14px 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Card Styles */
+        .stat-card {
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 22px;
+            background: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .modern-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .modern-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--card-border);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modern-card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Badges */
+        .badge-pending {
+            background-color: #fef3c7;
+            color: #b45309;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-progress {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-completed {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-rejected {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .priority-high {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .priority-medium {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Table custom styling */
+        .table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table tbody td {
+            padding: 16px 18px;
+            vertical-align: middle;
+            font-size: 0.92rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 18px 28px;
+            background: #ffffff;
+            border-top: 1px solid var(--card-border);
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @@media (max-width: 992px) {
+            #sidebar {
+                margin-left: -270px;
+            }
+            #sidebar.show {
+                margin-left: 0;
+            }
+            #main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <a href="@Url.Action("Index", "Home")" class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <div>
+                <h5>SmartCampus</h5>
+                <small>Service Portal</small>
+            </div>
+        </a>
+
+        <ul class="sidebar-nav">
+            <li class="nav-label">Core Navigation</li>
+            <li>
+                <a href="@Url.Action("Index", "Home")" class="sidebar-link @(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "ServiceRequest")" class="sidebar-link @(ViewContext.RouteData.Values["controller"].ToString() == "ServiceRequest" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>All Service Requests</span>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Create", "ServiceRequest")" class="sidebar-link @(ViewContext.RouteData.Values["controller"].ToString() == "ServiceRequest" && ViewContext.RouteData.Values["action"].ToString() == "Create" ? "active" : "")">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>New Service Request</span>
+                </a>
+            </li>
+
+            <li class="nav-label mt-3">Developer & Integration</li>
+            <li>
+                <a href="@Url.Content("~/api/ServiceApi")" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-code"></i>
+                    <span>REST API Endpoint</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/adityakumar-23/Net-Technology" target="_blank" class="sidebar-link">
+                    <i class="fa-brands fa-github"></i>
+                    <span>GitHub Repository</span>
+                </a>
+            </li>
+        </ul>
+
+        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+            <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);">
+                <div class="d-flex align-items-center gap-2 text-white-50 small mb-1">
+                    <i class="fa-solid fa-server text-success"></i>
+                    <span>Database: Connected</span>
+                </div>
+                <div class="text-white small fw-bold">SmartCampusDB (ADO.NET)</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div id="main-content">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="d-none d-md-block">
+                    <span class="text-muted small">Current Academic Session:</span>
+                    <strong class="text-dark small ms-1">2026-2027</strong>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <a href="@Url.Action("Create", "ServiceRequest")" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                    <i class="fa-solid fa-plus me-1"></i> New Request
+                </a>
+                <div class="d-flex align-items-center gap-2 ps-3 border-start">
+                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 36px; height: 36px; font-size: 0.85rem;">
+                        AK
+                    </div>
+                    <div class="d-none d-sm-block text-start">
+                        <div class="fw-semibold small lh-1">Aditya Kumar</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">Campus Administrator</small>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        <main class="container-fluid p-4">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 d-flex align-items-center" role="alert">
+                    <i class="fa-solid fa-circle-check fs-5 me-2 text-success"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 d-flex align-items-center" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation fs-5 me-2 text-danger"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </main>
+
+        <!-- Footer -->
+        <footer class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                &copy; @DateTime.Now.Year <strong>Smart Campus Service Portal</strong> &bull; Experiment 11 (.NET Technology)
+            </div>
+            <div>
+                ASP.NET MVC 5 &bull; Web API 2 &bull; ADO.NET &bull; SQL Server
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sidebar Toggle for Mobile
+        $('#sidebarToggle').on('click', function () {
+            $('#sidebar').toggleClass('show');
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

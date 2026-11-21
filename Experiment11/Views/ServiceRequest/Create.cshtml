@@ -1,0 +1,104 @@
+﻿@model SmartCampusPortal.Models.ServiceRequest
+@{
+    ViewBag.Title = "Create Campus Service Request";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-dark">Create Campus Service Request</h3>
+                <p class="text-muted mb-0">Submit a new facility or technical service ticket to campus administration.</p>
+            </div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="modern-card p-4">
+            @using (Html.BeginForm("Create", "ServiceRequest", FormMethod.Post, new { @class = "needs-validation" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row g-3">
+                    <!-- Student Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Student Name <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.StudentName, new { @class = "form-control", placeholder = "e.g., Aditya Kumar" })
+                        @Html.ValidationMessageFor(m => m.StudentName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Student Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Student Email <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.StudentEmail, new { @class = "form-control", placeholder = "e.g., aditya@campus.edu", type = "email" })
+                        @Html.ValidationMessageFor(m => m.StudentEmail, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Department <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.Department, new { @class = "form-control", placeholder = "e.g., Computer Science & Engineering" })
+                        @Html.ValidationMessageFor(m => m.Department, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Service Category -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Service Category <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.ServiceCategory,
+                            new SelectList(new[]
+                            {
+                                "IT Support",
+                                "Electrical Maintenance",
+                                "Hostel Maintenance",
+                                "Library Services",
+                                "Classroom Maintenance",
+                                "Other Services"
+                            }),
+                            "-- Select Service Category --",
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.ServiceCategory, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Request Title -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark">Request Title <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.RequestTitle, new { @class = "form-control", placeholder = "Short summary of the issue (e.g., Wi-Fi disconnected in Lab 2)" })
+                        @Html.ValidationMessageFor(m => m.RequestTitle, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark">Description <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4, placeholder = "Provide comprehensive details about the issue, location, room number, equipment details..." })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Priority -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Priority <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.Priority,
+                            new SelectList(new[]
+                            {
+                                "Low",
+                                "Medium",
+                                "High"
+                            }, Model != null ? Model.Priority : "Medium"),
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.Priority, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Submit Request
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

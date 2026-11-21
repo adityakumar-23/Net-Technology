@@ -1,0 +1,65 @@
+﻿@model SmartCampusPortal.Models.ServiceRequest
+@{
+    ViewBag.Title = "Update Request #" + (Model != null ? Model.RequestId : ViewBag.RequestId) + " Status";
+    int reqId = Model != null ? Model.RequestId : (ViewBag.RequestId != null ? (int)ViewBag.RequestId : 0);
+    string currentStatus = Model != null ? Model.Status : "Pending";
+    string currentRemarks = Model != null ? Model.AdminRemarks : "";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-dark">Update Request Status</h3>
+                <p class="text-muted mb-0">Change ticket workflow status and document technician remarks.</p>
+            </div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="modern-card p-4">
+            @if (Model != null)
+            {
+                <div class="p-3 bg-light rounded-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="badge bg-primary">Ticket #@Model.RequestId</span>
+                        <small class="text-muted">@Model.ServiceCategory</small>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1">@Model.RequestTitle</h6>
+                    <small class="text-muted d-block">Submitted by <strong>@Model.StudentName</strong> (@Model.Department)</small>
+                </div>
+            }
+
+            @using (Html.BeginForm("UpdateStatus", "ServiceRequest", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@reqId" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">Select New Status</label>
+                    <select name="status" class="form-select form-select-lg">
+                        <option value="Pending" @(currentStatus == "Pending" ? "selected" : "")>⏳ Pending (Under Initial Review)</option>
+                        <option value="In Progress" @(currentStatus == "In Progress" ? "selected" : "")>⚙️ In Progress (Technician Assigned / Working)</option>
+                        <option value="Completed" @(currentStatus == "Completed" ? "selected" : "")>✅ Completed (Maintenance Resolved)</option>
+                        <option value="Rejected" @(currentStatus == "Rejected" ? "selected" : "")>❌ Rejected (Invalid or Outside Scope)</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">Admin Remarks / Action Taken</label>
+                    <textarea name="adminRemarks" class="form-control" rows="3" placeholder="Add resolution details, parts replaced, technician assigned, or reason for decline...">@currentRemarks</textarea>
+                    <div class="form-text small">These remarks will be visible to student and administration on the ticket details page.</div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                        <i class="fa-solid fa-check me-1"></i> Save Status
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

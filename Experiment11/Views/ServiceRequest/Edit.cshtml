@@ -1,0 +1,125 @@
+@model SmartCampusPortal.Models.ServiceRequest
+@{
+    ViewBag.Title = "Edit Service Request #" + Model.RequestId;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-dark">Edit Service Request #@Model.RequestId</h3>
+                <p class="text-muted mb-0">Modify student ticket details, status, or administrative remarks.</p>
+            </div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="modern-card p-4">
+            @using (Html.BeginForm("Edit", "ServiceRequest", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.RequestId)
+                @Html.HiddenFor(m => m.RequestDate)
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row g-3">
+                    <!-- Student Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Student Name</label>
+                        @Html.TextBoxFor(m => m.StudentName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.StudentName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Student Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Student Email</label>
+                        @Html.TextBoxFor(m => m.StudentEmail, new { @class = "form-control", type = "email" })
+                        @Html.ValidationMessageFor(m => m.StudentEmail, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Department</label>
+                        @Html.TextBoxFor(m => m.Department, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Department, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Service Category -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Service Category</label>
+                        @Html.DropDownListFor(m => m.ServiceCategory,
+                            new SelectList(new[]
+                            {
+                                "IT Support",
+                                "Electrical Maintenance",
+                                "Hostel Maintenance",
+                                "Library Services",
+                                "Classroom Maintenance",
+                                "Other Services"
+                            }, Model.ServiceCategory),
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.ServiceCategory, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Request Title -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark">Request Title</label>
+                        @Html.TextBoxFor(m => m.RequestTitle, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.RequestTitle, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark">Description</label>
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Priority -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Priority</label>
+                        @Html.DropDownListFor(m => m.Priority,
+                            new SelectList(new[]
+                            {
+                                "Low",
+                                "Medium",
+                                "High"
+                            }, Model.Priority),
+                            new { @class = "form-select" })
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Status</label>
+                        @Html.DropDownListFor(m => m.Status,
+                            new SelectList(new[]
+                            {
+                                "Pending",
+                                "In Progress",
+                                "Completed",
+                                "Rejected"
+                            }, Model.Status),
+                            new { @class = "form-select" })
+                    </div>
+
+                    <!-- Admin Remarks -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark">Admin Remarks</label>
+                        @Html.TextAreaFor(m => m.AdminRemarks, new { @class = "form-control", rows = 2, placeholder = "Administrative notes, technician assignments, resolution comments..." })
+                        @Html.ValidationMessageFor(m => m.AdminRemarks, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
