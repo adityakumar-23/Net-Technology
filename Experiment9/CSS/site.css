@@ -1,0 +1,233 @@
+/* ==========================================================================
+   Experiment 9: Placement Management Dashboard - Custom CSS Theme
+   ========================================================================== */
+
+:root {
+    --bs-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --sidebar-width: 260px;
+    --sidebar-bg: #0f172a;
+    --sidebar-darker: #020617;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-purple: #8b5cf6;
+}
+
+body {
+    font-family: var(--bs-font-sans-serif);
+    color: #1e293b;
+    background-color: #f8fafc;
+    overflow-x: hidden;
+}
+
+#wrapper {
+    min-height: 100vh;
+}
+
+/* Sidebar */
+#sidebar-wrapper {
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    background-color: var(--sidebar-bg) !important;
+    display: flex;
+    flex-direction: column;
+    transition: margin 0.25s ease-out;
+}
+
+.bg-darker {
+    background-color: var(--sidebar-darker) !important;
+}
+
+#sidebar-wrapper .nav-link {
+    font-size: 0.88rem;
+    color: #94a3b8 !important;
+    transition: all 0.2s ease-in-out;
+}
+
+#sidebar-wrapper .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+#sidebar-wrapper .nav-link.active {
+    color: #ffffff !important;
+    background-color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+/* KPI Metric Cards */
+.metric-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 0.75rem !important;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.metric-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ASP.NET Data Controls Custom Styling */
+/* 1. GridView */
+.gridview-table {
+    margin-bottom: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+.gridview-table th {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em;
+    padding: 0.85rem !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.gridview-table th a {
+    color: #334155 !important;
+    text-decoration: none !important;
+}
+
+.gridview-table th a:hover {
+    color: var(--primary-color) !important;
+    text-decoration: underline !important;
+}
+
+.gridview-table td {
+    padding: 0.85rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    font-size: 0.88rem;
+}
+
+.gridview-pager td {
+    padding: 0.75rem 1rem !important;
+    background-color: #f8fafc;
+}
+
+.gridview-pager table {
+    margin: 0 auto;
+}
+
+.gridview-pager span, .gridview-pager a {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    margin: 0 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.gridview-pager span {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: 1px solid var(--primary-color);
+}
+
+.gridview-pager a {
+    background-color: #fff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.gridview-pager a:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+}
+
+/* 2. DetailsView */
+.detailsview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detailsview-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    width: 30%;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detailsview-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detailsview-pager table {
+    margin: 0.5rem auto;
+}
+
+.detailsview-pager a, .detailsview-pager span {
+    padding: 0.25rem 0.6rem;
+    margin: 0 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.82rem;
+}
+
+.detailsview-pager span {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.detailsview-pager a {
+    background-color: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+/* 3. DataList Cards */
+.company-card {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #e2e8f0;
+}
+
+.company-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+/* Badges */
+.badge-placed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    font-weight: 600;
+}
+
+.badge-unplaced {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    #sidebar-wrapper {
+        margin-left: calc(-1 * var(--sidebar-width));
+        position: fixed;
+        z-index: 1050;
+        top: 0;
+        bottom: 0;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
+
